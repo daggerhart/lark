@@ -1,0 +1,14 @@
+{#
+
+yaml - string of YAML content.
+
+#}
+{% spaceless %}
+{% set lines = yaml|split("\n") %}
+<details class='pretty-yaml'>
+    <summary>YAML</summary>
+    {% for line in lines %}
+        <div class='yaml-line'>{{ line }}</div>
+    {% endfor %}
+</details>
+{% endspaceless %}

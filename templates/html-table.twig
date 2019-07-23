@@ -1,0 +1,25 @@
+{#
+
+columns - Array of columns keyed with column id and value is column title.
+rows - Array of rows with each cell keyed by column id.
+#}
+<table class='wp-list-table widefat fixed striped'>
+    <thead>
+    <tr>
+    {% for column_key, column_title in columns %}
+        <th class="column-{{ column_key }}">{{ column_title }}</th>
+    {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for i, row in rows %}
+        <tr>
+        {% for column_key, column_title in columns %}
+            <td class="column-{{ column_key }}">
+                {{ row[column_key] }}
+            </td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,110 @@
+
+.summary {
+    margin-bottom: 16px;
+}
+.actions {
+    margin-bottom: 16px;
+}
+.column-id,
+.column-date,
+.column-file_details,
+.column-execute_status,
+.column-valid_status,
+.column-operations {
+    /*width: 10%;*/
+}
+.column-details {
+    width: 40%;
+}
+.column-details code {
+    font-size: 11px;
+}
+th.column-ready,
+.column-ready {
+    text-align: center;
+}
+
+.locations {
+    list-style: disc;
+    padding-left: 20px;
+    margin-top: 6px;
+}
+.locations li {
+    font-family: monospace;
+    font-size: 11px;
+}
+
+.properties-list {
+    list-style: disc;
+    margin: 0;
+    padding-left: 12px;
+}
+.properties-list li {
+    margin: 0;
+}
+.properties-list li .item-label {
+    font-weight: bold;
+    text-decoration: underline;
+}
+.properties-list li.required .item-label {
+    color: darkred;
+}
+.properties-list li .item-value:before {
+    content: " - ";
+}
+
+/*
+ * Transaction details page.
+ */
+table {
+    border: 1px solid #bbb;
+    width: 100%;
+}
+table tr {
+    background: #fff;
+}
+table tr:nth-of-type(2n) {
+    background: #eee;
+}
+table th {
+    vertical-align: top;
+    text-align: left;
+    padding: 4px 8px;
+}
+table td {
+    text-align: left;
+    padding: 4px 8px;
+    width: 86%;
+}
+
+.pretty-yaml {
+    font-family: monospace;
+    white-space: pre;
+    background: #fff;
+    padding: 2px 4px;
+}
+.pretty-yaml .yaml-line:nth-of-type(2n) {
+    background: #f2f2f2;
+}
+
+/*
+ * Log item
+ */
+.transaction-log {
+    background: #fff;
+    border: 1px solid #bbb;
+    padding: 6px 12px;
+}
+.transaction-log:nth-of-type(2n) {
+    background: #eee;
+}
+.transaction-log > summary {
+    font-weight: bold;
+    font-size: 16px;
+    padding: 6px 12px;
+}
+
+table.log-details {
+    margin-top: 12px;
+}
+table.log-data-iterable {}

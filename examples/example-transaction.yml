@@ -1,0 +1,60 @@
+# https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html
+id: 10001
+title: 'Example Transaction'
+description: 'Big list of example operations.'
+# Additional transaction configuration.
+config:
+  php_ini:
+    memory_limit: '512M'
+    max_execution_time: 120
+process:
+  # wpdb Update query
+  - operation: db_update
+    table: posts
+    set:
+      post_title: 'Welcome to Hell'
+    where:
+      ID: 1
+      post_status: publish
+  # Assign static values
+  - operation: assign_value
+    values:
+      some_post_id: 123
+      another_thing: 'Hello World'
+  # Assign values from a callback
+  - operation: assign_callback
+    name: 'my_post_meta'
+    callback: get_post_meta
+    args:
+      - 1
+      - '_some_meta_key'
+  # Assign and use values that were previously assigned.
+  - operation: assign_value
+    values:
+      tokens_from_other_assignment: 'This should say "Hello World" - {{ another_thing }}'
+  # Assign and use values that were previously assigned.
+  - operation: assign_callback
+    name: 'my_dynamic_post_meta'
+    callback: get_post_meta
+    args:
+      - '{{ some_post_id }}'
+      - '_some_meta_key'
+  # Update some metadata.
+  - operation: meta_update
+    type: 'post'
+    id: 123
+    key: '_some_meta_key'
+    value: 'my super new value'
+verify:
+  - operation: assign_callback
+    name: found_post
+    callback: get_page_by_title
+    args:
+      - 'Hello World'
+      - 'ARRAY_A'
+      - 'eyebrow'
+  - operation: verify_callback
+    left: 'post_type'
+    right: '{{ found_post }}'
+    callback: array_key_exists
+

@@ -1,0 +1,31 @@
+# https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html
+id: 'TestAssign'
+title: 'Assign Transaction'
+description: ''
+process:
+  # Assign static values
+  - operation: assign_value
+    values:
+      some_post_id: 123
+      another_thing: 'Hello World'
+  # Assign values from a callback
+  - operation: assign_callback
+    name: 'my_post_meta'
+    callback:
+      function: get_post_meta
+      args:
+        - 1
+        - '_some_meta_key'
+  # Assign and use values that were previously assigned.
+  - operation: assign_value
+    values:
+      tokens_from_other_assignment: 'This should say "Hello World" - {{ another_thing }}'
+  # Assign and use values that were previously assigned.
+  - operation: assign_callback
+    name: 'my_dynamic_post_meta'
+    callback:
+      function: get_post_meta
+      args:
+        - '{{ some_post_id }}'
+        - '_some_meta_key'
+

@@ -1,0 +1,28 @@
+{#
+
+type  - string: List type. 'ul' or 'ol'
+class - string: List classes
+items - array:  List items. Each item can be a string, or an array that
+                contains the properties: class, label, and value.
+
+#}
+{% if type is null %}
+    {% set type = 'ul' %}
+{% endif %}
+{% if class is null %}
+    {% set class = '' %}
+{% endif %}
+<{{ type }} class="item-list {{ class }}">
+    {% for item in items %}
+        {% if item is iterable %}
+            <li class="item {% if item.class %}{{ item.class }}{% endif %}">
+                {% if item.label %}
+                    <span class="item-label">{{ item.label }}</span>
+                {% endif %}
+                <span class="item-value">{{ item.value }}</span>
+            </li>
+        {% else %}
+            <li>{{ item }}</li>
+        {% endif %}
+    {% endfor %}
+</{{ type }}>

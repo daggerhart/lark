@@ -1,0 +1,9 @@
+# https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html
+id: 'TestValidOp'
+title: 'Valid Operation'
+description: ''
+process:
+  - operation: assign_value
+    values:
+      first_key: 'first value'
+      second_key: 'second value'

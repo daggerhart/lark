@@ -1,0 +1,7 @@
+# https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html
+id: 'TestInvalidOpId'
+title: 'Invalid Operation Id'
+description: ''
+process:
+  - operation: not_real_operation
+  - operation: another_not_real

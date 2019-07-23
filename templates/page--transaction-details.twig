@@ -1,0 +1,65 @@
+{#
+
+transaction - Simple transaction details for the current transaction instance.
+logs - Array of transaction logs.
+actions - Array of action paths and labels.
+
+#}
+
+<table class="transaction-details">
+<tbody>
+{% for key,detail in transaction %}
+    <tr class="row-{{ key }}">
+        <th class="row-label">{{ detail.label }}</th>
+        <td>{{ detail.value }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+
+<h2>Logs</h2>
+
+<p class="actions">
+    {% for action in actions %}
+        <a class="button button-primary" href="{{ action.path }}">{{ action.label }}</a>
+    {% endfor %}
+</p>
+
+{% for log in logs %}
+    <details class="transaction-log">
+        <summary>{{ log.type|upper }} - {{ log.timestamp_date }}</summary>
+
+        <table class="log-details">
+            <tbody>
+            {# Loop through each data item and output it as a row. #}
+            {% for data_key, data_item in log.data %}
+                <tr class="row-{{ data_key }}">
+                    <th class="row-label">{{ data_key }}</th>
+                    <td>
+                        {# Output the data if it is simple. #}
+                        {% if data_item is not iterable %}
+                            {{ data_item }}
+                        {# If the data is an array or object, start another table. #}
+                        {% else %}
+                            <table class="log-data-iterable">
+                                <tbody>
+                                {% for item_key, item_value in data_item %}
+                                    {% if item_value is not iterable %}
+                                        <tr class="row-{{ item_key }}">
+                                            <th class="row-label">{{ item_key }}</th>
+                                            <td>
+                                                {{ item_value }}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </details>
+{% endfor %}

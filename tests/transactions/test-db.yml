@@ -1,0 +1,14 @@
+# https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html
+id: 'TestDb'
+title: 'Db Transaction'
+description: ''
+process:
+  # wpdb Update query
+  - operation: db_update
+    table: posts
+    set:
+      post_title: 'Welcome to Hell'
+    where:
+      ID: 1
+      post_status: publish
+

@@ -1,0 +1,22 @@
+{#
+
+form - Array of form related values.
+select - Array of select field related values.
+
+#}
+<form action="{{ form.action }}" method="get">
+    {% for name,value in form.current_values %}
+        <input type="hidden" name="{{ name }}" value="{{ value }}">
+    {% endfor %}
+
+    <label for="select-transaction">{{ select.label }}</label>
+    <select id="select-transaction" name="id" required>
+        <option value="">{{ select.blank }}</option>
+        {% for value,label in select.options %}
+            <option value="{{ value }}">
+                {{ label }}
+            </option>
+        {% endfor %}
+    </select>
+    <input type="submit" class="button" value="{{ form.button }}">
+</form>

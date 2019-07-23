@@ -1,0 +1,26 @@
+{#
+
+db_count - Number of transactions in database
+file_count - Number of transactions in file system
+locations - Filesystem paths to transactions.
+sync_action_path - Url to execute sync action
+transactions_list - Rendered list of transactions.
+
+#}
+{% if summary %}
+<div class="summary">
+    {% for label, value in summary %}
+        <div class="summary-item"><strong>{{ label }}</strong>: {{ value }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if actions %}
+    <div class="actions">
+    {% for label, path in actions %}
+          <a class="button button-primary" href="{{ path }}">{{ label }}</a>
+    {% endfor %}
+    </div>
+{% endif %}
+
+{{ content }}

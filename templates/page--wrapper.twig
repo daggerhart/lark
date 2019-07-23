@@ -1,0 +1,34 @@
+{#
+
+slug - Page slug
+title - Page title
+messages - Array of message arrays (type & message)
+descriptions - Array of derscriptions
+content - Page content
+
+#}
+<div class="wrap {{ slug }}-wrapper">
+    <h2>{{ title }}</h2>
+
+    {% if messages %}
+    <div id="message">
+        {% for message in messages %}
+        <div class="{{ message.type }} notice is-dismissible">
+            <p>{{ message.message }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if descriptions %}
+    <div class="box description">
+        {% for description in descriptions %}
+        <p>{{ description }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="{{ slug }}-content">
+        {{ page }}
+    </div>
+</div>
