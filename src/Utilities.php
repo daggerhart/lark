@@ -86,6 +86,9 @@ class Utilities {
 		if ( empty( $args ) ) {
 			$args = [];
 		}
+		else if ( !is_array( $args ) ) {
+			$args = [ $args ];
+		}
 
 		return call_user_func_array( $callback, $args );
 	}

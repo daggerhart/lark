@@ -46,6 +46,7 @@ class TransactionProcessor {
 
 		// Give all transactions a token for the $wpdb->prefix.
 		$transaction->setTransactionValue( 'wpdb_prefix', $wpdb->prefix );
+		$transaction->setTransactionValue( 'ABSPATH', ABSPATH );
 
 		// Adjust PHP with transaction configuration.
 		$config = $transaction->getConfig();
