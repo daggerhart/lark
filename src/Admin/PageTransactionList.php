@@ -49,6 +49,7 @@ class PageTransactionList extends PageBase {
 			'validate' => [ $this, 'validateTransaction' ],
 			'reset' => [ $this, 'resetTransaction' ],
 			'sync' => [ $this, 'syncTransactions' ],
+			'purge' => [ $this, 'purgeMissingTransactions' ],
 			'delete' => [ $this, 'deleteTransaction' ],
 			'finalize' => [ $this, 'finalizeTransaction' ],
 			'view' => [ $this, 'viewTransaction' ],
@@ -87,7 +88,8 @@ class PageTransactionList extends PageBase {
 				] ),
 			],
 			'actions' => [
-				__( 'Sync Transactions' ) => $this->actionPath('sync')
+				__( 'Sync Transactions' ) => $this->actionPath('sync'),
+				__( 'Purge Missing Transactions' ) => $this->actionPath( 'purge' ),
 			],
 			'content' => $this->transactionsList( $transactionManager ),
 		] );
@@ -381,6 +383,54 @@ class PageTransactionList extends PageBase {
 		}
 		else {
 			return $this->error( __('Unable to sync transactions') );
+		}
+	}
+
+	/**
+	 * Attempt to delete all DB rows for missing transaction files.
+	 *
+	 * @return array
+	 */
+	public function purgeMissingTransactions() {
+		$this->validateAction();
+		$logger = new TransactionLogger();
+
+		try {
+			$results = (new TransactionManager)->purgeMissing();
+		}
+		catch (\Exception $exception) {
+			return $this->error($exception->getMessage());
+		}
+
+		if ( $results ) {
+			$purged = [];
+			$not_purged = [];
+
+			foreach ($results as $result) {
+				if ($result->purged) {
+					$purged[] = $result->tid;
+					// @todo - decide if we want to do this here.
+					//$logger->delete( $result->tid );
+				}
+				else {
+					$not_purged[] = $result->tid;
+				}
+			}
+
+			$message = '';
+
+			if ($purged) {
+				$message = __('Transactions purged: ') . implode(', ', $purged );
+
+				if ($not_purged) {
+					$message.= __( ' ------ Transactions not purged: ' ) . implode( ', ', $not_purged );
+				}
+			}
+
+			return $this->result( $message );
+		}
+		else {
+			return $this->error( __('No transactions to purge.') );
 		}
 	}
 

@@ -18,7 +18,11 @@ transactions_list - Rendered list of transactions.
 {% if actions %}
     <div class="actions">
     {% for label, path in actions %}
-          <a class="button button-primary" href="{{ path }}">{{ label }}</a>
+        {%  if loop.first %}
+            <a class="button button-primary" href="{{ path }}">{{ label }}</a>
+        {% else %}
+            <a class="button" href="{{ path }}">{{ label }}</a>
+        {% endif %}
     {% endfor %}
     </div>
 {% endif %}

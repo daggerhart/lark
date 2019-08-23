@@ -127,6 +127,17 @@ class TransactionManager {
 	}
 
 	/**
+	 * Get all transaction database rows.
+	 *
+	 * @return array|object|null
+	 */
+	public function fetchAll() {
+		global $wpdb;
+
+		return $wpdb->get_results("SELECT * FROM {$this->dbTable()} ORDER BY `timestamp`");
+	}
+
+	/**
 	 * Get a count of all transactions in the database.
 	 *
 	 * @return int
@@ -240,5 +251,33 @@ class TransactionManager {
 		}
 
 		return $results;
+	}
+
+	/**
+	 * Attempt to delete all DB rows for missing transaction files.
+	 *
+	 * @return array
+	 */
+	public function purgeMissing() {
+		$db_rows = $this->fetchAll();
+		$files = $this->getTransactions();
+		$missing = [];
+
+		foreach ($db_rows as $db_row) {
+			if (!isset($files[$db_row->tid])) {
+				$missing[] = $db_row;
+			}
+		}
+
+		foreach ($missing as $i => $db_row) {
+			global $wpdb;
+
+			$missing[$i]->purged = $wpdb->delete( $this->dbTable(), [
+				'tid' => $db_row->tid,
+				'filepath' => $db_row->filepath,
+			] );
+		}
+
+		return $missing;
 	}
 }
