@@ -87,6 +87,13 @@ class TransactionProcessor {
 			}
 		}
 
+		$messages = $transaction->getMessages();
+
+		if ( !empty( $messages ) ) {
+			$messages = $operation->tokenReplace( $messages );
+			$transaction->setTransactionValue( '__messages', $messages );
+		}
+
 		$transaction->setExecuteStatus( TransactionStatusExecute::COMPLETE );
 		$this->transactionManager->updateStatus( $transaction );
 		$this->logger->log( 'execute', $transaction );

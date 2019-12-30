@@ -92,6 +92,13 @@ class Transaction {
 	protected $verifyProcess = [];
 
 	/**
+	 * Array of strings that provide dynamic messages to the user after execution.
+	 *
+	 * @var array
+	 */
+	protected $messages = [];
+
+	/**
 	 * Stored values during operation execution.
 	 *
 	 * @var array
@@ -316,6 +323,24 @@ class Transaction {
 	 */
 	public function getProcess() {
 		return $this->process;
+	}
+
+	/**
+	 * Set the transaction messages.
+	 *
+	 * @param array
+	 */
+	public function setMessages( $messages ) {
+		$this->messages = $messages;
+	}
+
+	/**
+	 * Get the transaction messages.
+	 *
+	 * @return array
+	 */
+	public function getMessages() {
+		return $this->messages;
 	}
 
 	/**

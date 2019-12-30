@@ -42,7 +42,7 @@ class AssignValueModify extends OperationBase {
 	 */
 	public function properties() {
 		return [
-			'name' => [
+			'target' => [
 				'required' => true,
 				'help' => __('Assigned value name'),
 				'type' => '',
@@ -66,7 +66,7 @@ class AssignValueModify extends OperationBase {
 	 * @return bool|void
 	 */
 	public function execute( array $details ) {
-		$value = $this->transaction->getTransactionValue( $details['name'] );
+		$value = $this->transaction->getTransactionValue( $details['target'] );
 
 		if ( is_array( $value ) ) {
 			switch ( $details['strategy'] ) {
@@ -87,7 +87,7 @@ class AssignValueModify extends OperationBase {
 			$value = $details['value'];
 		}
 
-		$this->transaction->setTransactionValue( $details['name'], $value );
+		$this->transaction->setTransactionValue( $details['target'], $value );
 	}
 
 }

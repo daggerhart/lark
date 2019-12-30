@@ -61,6 +61,15 @@ interface OperationInterface {
 	public function prepare( array $details );
 
 	/**
+	 * Recursively replace all tokens within strings.
+	 *
+	 * @param array $details
+	 *
+	 * @return array
+	 */
+	public function tokenReplace( array $details );
+
+	/**
 	 * Validate the details given to the operation.
 	 *
 	 * @param array $details

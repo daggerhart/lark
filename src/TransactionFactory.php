@@ -127,6 +127,10 @@ class TransactionFactory {
 			if ( !empty( $details['config'] ) ) {
 				$transaction->setConfig( $details['config'] );
 			}
+
+			if ( !empty( $details['messages'] ) ) {
+				$transaction->setMessages( $details['messages'] );
+			}
 		}
 
 		return $transaction;

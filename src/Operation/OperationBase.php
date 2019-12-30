@@ -97,6 +97,16 @@ abstract class OperationBase implements OperationInterface {
 			}
 		}
 
+		$details = $this->tokenReplace( $details );
+
+		return $details;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function tokenReplace( array $details ) {
+
 		// Replace tokens in operation details with values stored on transaction.
 		array_walk_recursive( $details, function( &$value, $key ) {
 			// Only attempt to replace tokens in values that are strings.

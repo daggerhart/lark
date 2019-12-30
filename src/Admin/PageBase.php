@@ -358,6 +358,12 @@ abstract class PageBase {
 	 */
 	public function showPage() {
 		$messages = $this->getMessages();
+		$messages = array_reverse( $messages );
+		$messages_by_type = [];
+		foreach( $messages as $message ) {
+			$messages_by_type[ $message['type'] ][] = $message;
+		}
+
 		$description = $this->description();
 		if ( !empty( $description ) && !is_array( $description ) ) {
 			$description = [ $description ];
@@ -367,7 +373,7 @@ abstract class PageBase {
 			'slug' => $this->slug(),
 			'title' => $this->title(),
 			'descriptions' => $description,
-			'messages' => $messages,
+			'messages_by_type' => $messages_by_type,
 			'page' => $this->page(),
 		] );
 	}

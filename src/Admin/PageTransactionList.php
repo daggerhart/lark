@@ -118,29 +118,39 @@ class PageTransactionList extends PageBase {
 		$rows = [];
 		foreach ( $transactions_rows as $row ) {
 			$transaction = TransactionFactory::createFromDb( $row->tid );
-			$executable = $transaction->getValidStatus() == TransactionStatusValid::VALID && $transaction->getExecuteStatus() != TransactionStatusExecute::COMPLETE;
 			$view_button = "<div><a class='button' href='{$this->actionPath('view')}&id={$transaction->getId()}'>View</a></div>";
-			$validate_button = "<div><a class='button' href='{$this->actionPath('validate')}&id={$transaction->getId()}'>Validate</a></div>";
-			$reset_button = "<div><a class='button' href='{$this->actionPath('reset')}&id={$transaction->getId()}'>Reset</a></div>";
-			$delete_button = "<div><a class='button' href='{$this->actionPath('delete')}&id={$transaction->getId()}'>Delete</a></div>";
-			$execute_button = "<div><a class='button' href='{$this->actionPath('execute')}&id={$transaction->getId()}'>Execute</a></div>";
-			$finalize_button = "<div><a class='button' href='{$this->actionPath('finalize')}&id={$transaction->getId()}'>Finalize</a></div>";
-			$verify_button = "<div><a class='button' href='{$this->actionPath('verify')}&id={$transaction->getId()}'>Verify</a></div>";
-
-			if ( empty( $transaction->getVerifyProcess() ) ) {
-				$verify_button = '';
-			}
+			$validate_button = "<div><a class='button button-small' href='{$this->actionPath('validate')}&id={$transaction->getId()}'>Validate</a></div>";
+			$reset_button = "<div><a class='button button-small' href='{$this->actionPath('reset')}&id={$transaction->getId()}'>Reset</a></div>";
+			$delete_button = "<div><a class='button button-small' href='{$this->actionPath('delete')}&id={$transaction->getId()}'>Delete</a></div>";
+			$execute_button = "<div><a class='button button-small' href='{$this->actionPath('execute')}&id={$transaction->getId()}'>Execute</a></div>";
+			$finalize_button = "<div><a class='button button-small' href='{$this->actionPath('finalize')}&id={$transaction->getId()}'>Finalize</a></div>";
+			$verify_button = "<div><a class='button button-small' href='{$this->actionPath('verify')}&id={$transaction->getId()}'>Verify</a></div>";
 
 			// Change the allowed operations based on the execution status.
-			$operations = $delete_button;
+			$validated = $transaction->getValidStatus() == TransactionStatusValid::VALID;
+			$completed = $transaction->getExecuteStatus() == TransactionStatusExecute::COMPLETE;
+			$finalized = $transaction->getExecuteStatus() == TransactionStatusExecute::FINALIZED;
+			$operations = [];
 
-			if ( $transaction->getExecuteStatus() == TransactionStatusExecute::COMPLETE ) {
-				$operations = $verify_button . $reset_button . $finalize_button;
+			if ( !$validated ) {
+				$operations[] = $validate_button;
 			}
-			else if ( $transaction->getExecuteStatus() == TransactionStatusExecute::FINALIZED ) {
-				$operations = $verify_button;
-				$execute_button = '';
-				$validate_button = '';
+
+			if ( !$completed && !$finalized ) {
+				$operations[] = $execute_button;
+			}
+
+			if ( $completed ) {
+				$operations[] = $reset_button;
+				$operations[] = $delete_button;
+
+				if ( !empty( $transaction->getVerifyProcess() ) ) {
+					$operations[] = $verify_button;
+				}
+
+				if ( !$finalized ) {
+					$operations[] = $finalize_button;
+				}
 			}
 
 			$rows[] = [
@@ -149,10 +159,10 @@ class PageTransactionList extends PageBase {
 							  <p>{$transaction->getDescription()}</p>
 							  <code>{$transaction->getFilepath()}</code>",
 				'file_details' => $transaction->getFileExists() ? 'Yes' : 'No',
-				'valid_status' => "{$transaction->getValidStatusName()} ({$transaction->getValidStatus()}) {$validate_button}",
-				'execute_status' => "{$transaction->getExecuteStatusName()} ({$transaction->getExecuteStatus()})" . ($executable ? $execute_button : ''),
+				'valid_status' => "{$transaction->getValidStatusName()} ({$transaction->getValidStatus()})",
+				'execute_status' => "{$transaction->getExecuteStatusName()} ({$transaction->getExecuteStatus()})",
 				'date' => date( 'M, d Y g:ia', $transaction->getTimestamp() ),
-				'operations' => $operations,
+				'operations' => implode( '<hr>', $operations ),
 			];
 		}
 
@@ -210,6 +220,23 @@ class PageTransactionList extends PageBase {
 			return $this->error( __('Transaction not found') );
 		}
 
+		// If the transaction hasn't been validated yet, try that before execution.
+		if ( $transaction->getValidStatus() != TransactionStatusValid::VALID ) {
+			try {
+				$validation = $this->validateTransaction();
+				$this->addMessage( $validation['message'], $validation['type'] );
+			}
+			catch (\Exception $exception) {
+				return $this->error( $exception->getMessage() );
+			}
+
+			if ( $validation['type'] == 'error' ) {
+				return $validation;
+			}
+			// Refresh the transaction.
+			$transaction = $this->getTransactionFromRequest();
+		}
+
 		$transactionManager = new TransactionManager();
 		$operationManager = new OperationManager();
 		$logger = new TransactionLogger();
@@ -220,6 +247,14 @@ class PageTransactionList extends PageBase {
 		}
 		catch( \Exception $exception ) {
 			return $this->error( $exception->getMessage() );
+		}
+
+		$messages = $transaction->getTransactionValue( '__messages' );
+
+		if ( !empty( $messages ) ) {
+			foreach ( $messages as $message ) {
+				$this->addMessage( $message, 'updated' );
+			}
 		}
 
 		return $this->result( __('Successfully processed transaction: ' . $transaction->getId()) );

@@ -10,12 +10,14 @@ content - Page content
 <div class="wrap {{ slug }}-wrapper">
     <h2>{{ title }}</h2>
 
-    {% if messages %}
+    {% if messages_by_type %}
     <div id="message">
-        {% for message in messages %}
-        <div class="{{ message.type }} notice is-dismissible">
-            <p>{{ message.message }}</p>
-        </div>
+        {% for message_type, messages in messages_by_type  %}
+            <div class="{{ message_type }} notice is-dismissible">
+                {% for message in messages %}
+                    <p>{{ message.message }}</p>
+                {% endfor %}
+            </div>
         {% endfor %}
     </div>
     {% endif %}
