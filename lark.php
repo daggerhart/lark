@@ -11,7 +11,7 @@ License: GPL2
 define('LARK_PLUGIN_DIR', __DIR__);
 define('LARK_PLUGIN_URL', plugins_url('', __FILE__));
 
-require 'vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 /**
  * Main admin page.
