@@ -106,6 +106,13 @@ class Transaction {
 	protected $transactionValues = [];
 
 	/**
+	 * Service for sending messages related to execution.
+	 *
+	 * @var MessengerInterface
+	 */
+	protected $messenger;
+
+	/**
 	 * Transaction constructor.
 	 */
 	public function __construct() {}
@@ -326,6 +333,24 @@ class Transaction {
 	}
 
 	/**
+	 * Set the messenger service.
+	 *
+	 * @param MessengerInterface $messenger
+	 */
+	public function setMessenger( MessengerInterface $messenger ) {
+		$this->messenger = $messenger;
+	}
+
+	/**
+	 * Get the messenger service.
+	 *
+	 * @return MessengerInterface
+	 */
+	public function getMessenger() {
+		return $this->messenger;
+	}
+
+	/**
 	 * Set the transaction messages.
 	 *
 	 * @param array
@@ -341,6 +366,19 @@ class Transaction {
 	 */
 	public function getMessages() {
 		return $this->messages;
+	}
+
+	/**
+	 * Add transaction messages to existing set of messages.
+	 *
+	 * @param array
+	 */
+	public function addMessages( $messages ) {
+		if ( !is_array( $messages ) ) {
+			$messages = [ $messages ];
+		}
+
+		$this->messages = array_merge( $this->messages, $messages );
 	}
 
 	/**

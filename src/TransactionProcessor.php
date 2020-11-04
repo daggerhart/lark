@@ -2,6 +2,8 @@
 
 namespace Lark;
 
+use Lark\Operation\OperationInterface;
+
 /**
  * Class TransactionProcessor
  *
@@ -40,6 +42,8 @@ class TransactionProcessor {
 	 * Common transaction preparation steps.
 	 *
 	 * @param Transaction $transaction
+	 *
+	 * @throws \Exception
 	 */
 	protected function prepare( Transaction $transaction ) {
 		global $wpdb;
@@ -53,6 +57,15 @@ class TransactionProcessor {
 		if ( !empty( $config['php_ini'] ) && is_array( $config['php_ini'] ) ) {
 			foreach ( $config['php_ini'] as $key => $value ) {
 				ini_set( $key, $value );
+			}
+		}
+		if ( !empty( $config['php_require_once'] ) && is_array( $config['php_require_once'] ) ) {
+			/** @var OperationInterface $operation */
+			$operation_class = $this->operationManager->get('assign_callback');
+			$operation = new $operation_class( $transaction );
+			$requirements = $operation->tokenReplace( $config['php_require_once'] );
+			foreach( $requirements as $file ) {
+				require_once $file;
 			}
 		}
 	}
@@ -108,25 +121,32 @@ class TransactionProcessor {
 	 * @throws \Exception
 	 */
 	public function validate( Transaction $transaction ) {
-		$this->prepare( $transaction );
 		$transaction->setValidStatus( TransactionStatusValid::INVALID );
 		$process = $transaction->getProcess();
 		$result = [
 			'valid' => !empty( $process ),
 			'operations' => [],
 		];
+		try {
+			$this->prepare( $transaction );
+		}
+		catch (\Exception $exception) {
+			$result['valid'] = false;
+		}
 
-		foreach ( $process as $operation_details ) {
-			$operation_class = $this->operationManager->get( $operation_details['operation'] );
-			/** @var \Lark\Operation\OperationInterface $operation */
-			$operation = new $operation_class( $transaction );
-			$operation_details = $operation->prepare( $operation_details );
-			$operation_result = [
-				'valid' => $operation->ready() && $operation->validate( $operation_details ),
-				'details' => $operation_details,
-			];
-			$result['valid'] = $result['valid'] && $operation_result['valid'];
-			$result['operations'][] = $operation_result;
+		if ( $result['valid'] ) {
+			foreach ( $process as $operation_details ) {
+				$operation_class = $this->operationManager->get( $operation_details['operation'] );
+				/** @var \Lark\Operation\OperationInterface $operation */
+				$operation = new $operation_class( $transaction );
+				$operation_details = $operation->prepare( $operation_details );
+				$operation_result = [
+					'valid' => $operation->ready() && $operation->validate( $operation_details ),
+					'details' => $operation_details,
+				];
+				$result['valid'] = $result['valid'] && $operation_result['valid'];
+				$result['operations'][] = $operation_result;
+			}
 		}
 
 		if ( $result['valid'] ) {

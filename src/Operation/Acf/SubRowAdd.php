@@ -91,6 +91,13 @@ class SubRowAdd extends OperationBase {
 			$details['parent_row_index'],
 			$details['child_row_selector'],
 		];
+
+		// If the parent row has no values, create an empty row so we can add a sub row.
+		$exists = get_field( $details['parent_row_selector'], $details['id'] );
+		if ( empty( $exists ) ) {
+			add_row( $details['parent_row_selector'], [], $details['id'] );
+		}
+
 		$result = add_sub_row( $target, $details['value'], $details['id'] );
 
 		if ( $details['name'] ) {

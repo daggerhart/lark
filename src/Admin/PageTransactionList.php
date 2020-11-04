@@ -252,6 +252,7 @@ class PageTransactionList extends PageBase {
 		$messages = $transaction->getTransactionValue( '__messages' );
 
 		if ( !empty( $messages ) ) {
+			$messages = array_reverse( $messages );
 			foreach ( $messages as $message ) {
 				$this->addMessage( $message, 'updated' );
 			}

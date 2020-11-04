@@ -51,6 +51,12 @@ function lark_admin_pages() {
 }
 add_action( 'admin_menu', 'lark_admin_pages' );
 
+/**
+ * WP CLI support.
+ */
+if ( class_exists('WP_CLI') ) {
+	\Lark\Cli\CommandManager::register();
+}
 
 /**
  * Get array of filesystem locations where transactions are registered.
