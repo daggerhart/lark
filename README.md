@@ -1,22 +1,12 @@
 
-## TODO
-
-- Unit tests on all major classes
-
-Things to solve:
-
-- Do we want to sync transactions that don't validate?
-    (implied, do we want to validate transactions before syncing?)
-- (Yes!) Do we want transactions to have another set of operations for validating the results of the transaction?
-
-### Tests
-
-* Setup: `./tests/bin/install-wp-tests.sh`
-* Run: `composer test`
-
 # Lark
 
 Lark is a WordPress plugin that allows developers to define complex functionality as YAML files.
+
+## Installation
+
+* Expects composer to install. See [Composer with Git Repos](https://www.daggerhart.com/composer-how-to-use-git-repositories/)
+* If not using composer for the website, download this plugin to your plugins directory, navigate to it and run `composer install`.
 
 ## Concepts
 
@@ -147,3 +137,18 @@ When the `OperationManager` discovers operations for this example, it will creat
 class names following roughly this pattern: `str_replace( '.php', '', filename );`.
 Lark will understand the full class name to be: `\SomeOperation()`
 
+### Tests
+
+* Setup: `./tests/bin/install-wp-tests.sh`
+* Run: `composer test`
+
+
+## TODO
+
+- Unit tests on all major classes
+
+Things to solve:
+
+- Do we want to sync transactions that don't validate?
+    (implied, do we want to validate transactions before syncing?)
+- (Yes!) Do we want transactions to have another set of operations for validating the results of the transaction?

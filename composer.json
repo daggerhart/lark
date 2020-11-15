@@ -1,5 +1,7 @@
 {
     "name": "daggerhart/lark",
+    "type": "wordpress-plugin",
+    "keywords": [ "wordpress" ],
     "authors": [
         {
             "name": "Jonathan Daggerhart",

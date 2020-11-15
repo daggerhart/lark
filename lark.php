@@ -2,16 +2,18 @@
 /*
 Plugin Name: Lark
 Description: Apply arbitrary changes (transactions) to a WordPress site using formatted YAML files.
-Version: 1.0.0
+Version: 1.1.0
 Author: Jonathan Daggerhart, Michael Hull
-Author URI:
+Author URI: https://daggerhart.com
 License: GPL2
 */
 
 define('LARK_PLUGIN_DIR', __DIR__);
 define('LARK_PLUGIN_URL', plugins_url('', __FILE__));
 
-require __DIR__ . '/vendor/autoload.php';
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require __DIR__ . '/vendor/autoload.php';
+}
 
 /**
  * Main admin page.
