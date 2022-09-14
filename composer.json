@@ -9,8 +9,8 @@
         }
     ],
     "require": {
-        "symfony/yaml": "^4.2",
-        "symfony/finder": "^4.2",
+        "symfony/yaml": ">=4.2",
+        "symfony/finder": ">=4.2",
         "twig/twig": "^2.10"
     },
     "require-dev": {
