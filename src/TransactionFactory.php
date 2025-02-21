@@ -117,7 +117,7 @@ class TransactionFactory {
 			$transaction->setId( $details['id'] );
 			$transaction->setTitle( $details['title'] );
 			$transaction->setDescription( !empty( $details['description'] ) ? $details['description'] : '' );
-			$transaction->setProcess( $details['process'] );
+			$transaction->setProcess( $details['process'] ?? [] );
 			$transaction->setFilepath( self::absoluteFilepath( $filepath ) );
 
 			if ( !empty( $details['verify'] ) ) {

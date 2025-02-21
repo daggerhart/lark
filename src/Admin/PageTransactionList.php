@@ -322,6 +322,9 @@ class PageTransactionList extends PageBase {
 				return !$operation['valid'];
 			});
 
+			if(empty($invalid)) {
+				return $this->error(__('No operations found'));
+			}
 			return $this->error( __('Invalid operations found: ') . '<pre>'.print_r($invalid,1).'</pre>' );
 		}
 	}
