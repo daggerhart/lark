@@ -43,6 +43,9 @@ class TransactionManager {
 	 * @return int
 	 */
 	public function fileCount() {
+		if(!$this->locations) {
+			return 0;
+		}
 		$finder = new Finder();
 		$finder->in( $this->locations )->files()->name( '*.yml' );
 		return $finder->count();
@@ -54,6 +57,9 @@ class TransactionManager {
 	 * @return array
 	 */
 	protected function discover() {
+		if(!$this->locations) {
+			return [];
+		}
 		$finder = new Finder();
 		$finder->in( $this->locations )->files()->name( '*.yml' );
 
